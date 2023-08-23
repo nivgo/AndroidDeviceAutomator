@@ -34,15 +34,25 @@ class ADB_Handler():
     def install_adb(self):
         """Installs adb based on the system type using URLs from a downloads.json file."""
         print(f"Detected a {self.system_type} system \n Starting installation....")
-        with open('downloads.json') as json_file:
-            systems_urls_dict = json.load(json_file)
-        
+        try:
+            with open('downloads.json') as json_file:
+                systems_urls_dict = json.load(json_file)
+        except json.JSONDecodeError:
+            raise ValueError("Invalid JSON format in downloads.json")
+
+        if self.system_type not in systems_urls_dict:
+            raise ValueError(f"No download URL found for system type: {self.system_type}")
+
         # Fetching the download URL for the given system type
         url = systems_urls_dict[self.system_type]
 
         # Requesting the zip file from the given URL
         response = requests.get(url, allow_redirects=True)
         
+        if response.status_code != 200:
+            raise ConnectionError(f"Failed to download ADB. HTTP Status Code: {response.status_code}")
+
+
         # Setting up paths for the zip file and extraction
         zip_file_path = f"{self.adb_folder}.zip"
         unpack_path = os.path.dirname(self.adb_folder)  # unpacking one level up to prevent nesting
@@ -56,6 +66,9 @@ class ADB_Handler():
         with open(zip_file_path, 'wb') as file:
             for chunk in response.iter_content(chunk_size=8192):
                 file.write(chunk)
+
+        if not os.path.exists(zip_file_path) or not shutil._UNPACK_FORMATS:
+            raise FileNotFoundError(f"Invalid or corrupted archive: {zip_file_path}")
 
         # Informing user about the download location and unpacking the archive
         print(f"File downloaded to: {zip_file_path}")
@@ -112,14 +125,21 @@ class Android_commander():
 
     def run_commands(self):
         """Loads and runs the adb commands from a predefined JSON file."""
+        # Get the directory of the current script
+        script_directory = os.path.dirname(os.path.abspath(__file__))
 
+        # Construct the path to commands_file.json relative to the script's location
+        commands_file_path = os.path.join(script_directory,'commands_file.json')
         print(f"Loading adb commands....")
+
         try:
-            with open('D:\projects\Android_USB_CONTROLLER\commands_file.json') as json_file:
+            with open(commands_file_path) as json_file:
                 commands_list = json.load(json_file)
-        except:
-            raise ValueError('Didnt find commands file')
-        
+        except json.JSONDecodeError:
+            raise ValueError("Invalid JSON format in commands_file.json")
+
+
+
         # Build and execute the commands
         commands = self.commands_builder(commands_list)
         for command in commands:

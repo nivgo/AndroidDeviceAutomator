@@ -1,0 +1,4 @@
+[{"type":"sms","command":{"content":"message","phone":"<prefix and number without plus>","additional_commands":["adb shell input keyevent 22","adb shell input keyevent 22","adb shell input keyevent 66"]}},
+{"type":"call","command":{"phone":"<prefix and number with plus>"}},
+{"type":"sms","command":{"content":"message","phone":"<prefix and number without plus>","additional_commands":["adb shell input keyevent 22","adb shell input keyevent 22","adb shell input keyevent 66"]}},
+{"type":"general","command":{"content":"am start -a android.media.action.IMAGE_CAPTURE"}}]

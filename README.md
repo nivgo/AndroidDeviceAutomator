@@ -1,44 +1,45 @@
 # AndroidDeviceAutomator
-AndroidDeviceAutomator: A Python-based toolkit for automating and executing a series of ADB commands on Android devices. Supports SMS, call functionalities, and general command execution.
+AndroidDeviceAutomator is a python toolkit for automating interactions with Android devices using the Android Debug Bridge. It supports functionalities such as sending SMS, making calls, executing general commands,recording & playing back device events.
 
-Overview
+## Overview
 
-This Python script is a utility designed to interact with Android devices using the Android Debug Bridge (ADB). It provides features to detect the operating system, install ADB if not available, and execute various commands on a connected Android device.
+This Python utility is designed to:
 
-Setup & Installation
-1.Clone the Repository:
-    git clone YOUR_REPOSITORY_LINK_HERE
+- Detect the operating system and ensure the Android Debug Bridge (ADB) is available.
+- Record specific Android device events to a file.
+- Play back Android device events from a file.
+- Send SMS, make calls, and execute general commands on the connected Android device.
 
+## Setup & Installation
 
-2.Install the Dependencies: 
-    Navigate to the directory containing the script and run:
+1. **Clone the Repository:**
+    ```
+    git clone https://github.com/nivgo/AndroidDeviceAutomator.git
+    ```
+
+2. **Install the Dependencies:** 
+    - Navigate to the directory containing the script.
+    ```
     pip install -r requirements.txt
+    ```
+
+3. **Setup JSON Files:**  
+    - For manual command execution, create a commands_file.json like file in the path Repo\<your_file>.json with commands you wish to run on the Android device.
+    - For recording device events, no json setup is needed. The program will save the recorded events as json strings in the specified output file.
+      A record file is available as an example.
+4. **Phone-side Preparation:**  
+    - Ensure your Android device is connected to your computer with "USB Debugging" enabled.
+    - Switch the phone to MTP mode.
+    - Allow screen prompt to finish the setup.
+
+5. **Run the Script:**  
+    python main.py -a [record/play] -p [path_to_file] [-d device_serials] [-e event_numbers] [--loop]
+    *playing records was tested and can be used only for rooted devices
+## Contributing
+Suggestions, improvements, or bug reports are always welcome. 
+Open an issue to start a discussion!
 
 
-3.Setup JSON Files:
-    Set up a commands_file.json at the path Repo\commands_file.json containing commands you intend to run on the Android device.
-
-4.Phone side preparation:
-    Connect Your Android Device: Make sure your Android device is connected to your computer with "USB Debugging" enabled.
-    Make sure the phone is in MTP mode.
-    Follow any on-screen prompts to complete the process.
-
-5.Run the Script:
-    Navigate to the directory containing the script and run:
-    python android_auto_command.py
-
-
-Contributing
-If you have suggestions for how this script could be improved, or want to report a bug, open an issue! We'd love all and any contributions.
-
-For direct contributions:
-
-    Fork the repository.
-    Clone your fork: git clone YOUR_FORK_LINK_HERE
-    Make your changes.
-    Submit a pull request.
-
-Support
-    If you run into any problems or issues, please open an issue on this repository.
-
+## Support
+Encounter any challenges or issues? Please open an issue on this repository for assistance.
 

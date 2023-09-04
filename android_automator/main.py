@@ -24,6 +24,8 @@ def main(*args):
                         help='Loop the playback of the events continuously.')
     parser.add_argument('-a', '--activity', choices=['record', 'play'], required=True,
                         help='Choose whether to record or play events.')
+    parser.add_argument('-s', '--slowdown', type=float, default=1.0,
+                        help='Factor by which to slow down the playback. 1.0 is real-time, 2.0 is half speed, etc.')
 
     args = parser.parse_args()
 
@@ -50,7 +52,7 @@ def main(*args):
         if args.loop:
             print("Playback will loop continuously.")
         adb_player = player.AdbPlayer(adb_full_path=path, adb_ip="127.0.0.1", adb_port=5037, devices=devices_list)
-        adb_player.play(path, repeat=args.loop, replay_slowdown_factor=3.0)
+        adb_player.play(path, repeat=args.loop, replay_slowdown_factor=args.slowdown)
 
 
 if __name__ == '__main__':

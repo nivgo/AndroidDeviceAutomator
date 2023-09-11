@@ -51,8 +51,8 @@ def main(*args):
     else:
         if args.loop:
             print("Playback will loop continuously.")
-        adb_player = player.AdbPlayer(adb_full_path=path, adb_ip="127.0.0.1", adb_port=5037, devices=devices_list)
-        adb_player.play(path, repeat=args.loop, replay_slowdown_factor=args.slowdown)
+        adb_player = player.AdbExecutor(adb_full_path=path, adb_ip="127.0.0.1", adb_port=5037, devices=devices_list)
+        adb_player.execute_commands(path, repeat=args.loop, replay_slowdown_factor=args.slowdown)
 
 
 if __name__ == '__main__':

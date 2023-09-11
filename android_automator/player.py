@@ -22,9 +22,9 @@ def run_command(command, directory=None):
 def get_serial(device):
     return device.serial
 
-class AdbPlayer:
+class AdbExecutor:
     def __init__(self, adb_full_path, adb_ip="127.0.0.1", adb_port=5037, devices=[]):
-        print("Initializing ADB Player...")
+        print("Initializing ADB commands executor...")
         self.devices_list = devices
         self.adb_client = AdbClient(host=adb_ip, port=adb_port)
         self.adb_folder = os.path.dirname(adb_full_path)
@@ -46,7 +46,7 @@ class AdbPlayer:
         device.shell(cmd_str)
         print(f"Sent command to {device.serial}: {cmd_str}")
         
-    def multi_threaded_play_command(self, cmd, sleep_interval=None):
+    def multi_threaded_command_executer(self, cmd, sleep_interval=None):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             executor.map(self.send_adb_command, self.adb_controlled_devices, [cmd] * len(self.adb_controlled_devices),[sleep_interval]* len(self.adb_controlled_devices))
 
@@ -63,7 +63,7 @@ class AdbPlayer:
         else:
             raise ValueError("Unsupported file type. Refer to README for required types.")
 
-    def play(self, fpath, repeat=False, replay_slowdown_factor=4.0):
+    def execute_commands(self, fpath, repeat=False, replay_slowdown_factor=4.0):
         commands_type = self.check_commands_type(fpath)
         initial_ts = None
 
@@ -73,7 +73,7 @@ class AdbPlayer:
             commands_list = commands_builder_obj.built_commands
             while True:
                 for command in commands_list:
-                    self.multi_threaded_play_command(command,COMMAND_BUILDER_TIMEOUT * replay_slowdown_factor)
+                    self.multi_threaded_command_executer(command,COMMAND_BUILDER_TIMEOUT * replay_slowdown_factor)
 
                 if not repeat:
                     break
@@ -98,7 +98,7 @@ class AdbPlayer:
                             
                         last_ts = ts
                         cmd = ['sendevent', dev, str(etype), str(ecode), str(data)]
-                        self.multi_threaded_play_command(cmd, relative_ts)
+                        self.multi_threaded_command_executer(cmd, relative_ts)
                 if not repeat:
                     break
         print("Playback complete.")
